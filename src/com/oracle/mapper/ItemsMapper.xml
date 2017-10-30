@@ -6,7 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="price" jdbcType="REAL" property="price" />
     <result column="pic" jdbcType="VARCHAR" property="pic" />
-    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="createtime" jdbcType="DATE" property="createtime" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oracle.po.Items">
     <result column="detail" jdbcType="LONGVARCHAR" property="detail" />
@@ -128,7 +128,7 @@
       pic, createtime, detail
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=REAL}, 
-      #{pic,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{detail,jdbcType=LONGVARCHAR}
+      #{pic,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE}, #{detail,jdbcType=LONGVARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.oracle.po.Items">
@@ -167,7 +167,7 @@
         #{pic,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
+        #{createtime,jdbcType=DATE},
       </if>
       <if test="detail != null">
         #{detail,jdbcType=LONGVARCHAR},
@@ -196,7 +196,7 @@
         pic = #{record.pic,jdbcType=VARCHAR},
       </if>
       <if test="record.createtime != null">
-        createtime = #{record.createtime,jdbcType=TIMESTAMP},
+        createtime = #{record.createtime,jdbcType=DATE},
       </if>
       <if test="record.detail != null">
         detail = #{record.detail,jdbcType=LONGVARCHAR},
@@ -212,7 +212,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       price = #{record.price,jdbcType=REAL},
       pic = #{record.pic,jdbcType=VARCHAR},
-      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      createtime = #{record.createtime,jdbcType=DATE},
       detail = #{record.detail,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -224,7 +224,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       price = #{record.price,jdbcType=REAL},
       pic = #{record.pic,jdbcType=VARCHAR},
-      createtime = #{record.createtime,jdbcType=TIMESTAMP}
+      createtime = #{record.createtime,jdbcType=DATE}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -242,7 +242,7 @@
         pic = #{pic,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null">
-        createtime = #{createtime,jdbcType=TIMESTAMP},
+        createtime = #{createtime,jdbcType=DATE},
       </if>
       <if test="detail != null">
         detail = #{detail,jdbcType=LONGVARCHAR},
@@ -255,7 +255,7 @@
     set name = #{name,jdbcType=VARCHAR},
       price = #{price,jdbcType=REAL},
       pic = #{pic,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=DATE},
       detail = #{detail,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -264,7 +264,7 @@
     set name = #{name,jdbcType=VARCHAR},
       price = #{price,jdbcType=REAL},
       pic = #{pic,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP}
+      createtime = #{createtime,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
