@@ -22,38 +22,17 @@
 		<!-- <property name="maxActive" value="10"></property> -->
 		<property name="maxIdle" value="5"></property>
 	</bean>
-	<!-- 配置c3p0连接池 -->
-	<!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"> <property name="driverClass" 
-		value="${jdbc.driver}"></property> <property name="jdbcUrl" value="${jdbc.url}"></property> <property 
-		name="user" value="${jdbc.username}"></property> <property name="password" value="${jdbc.password}"></property> 
-		</bean> -->
 	<!-- sqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- 加载mybatis的配置文件 -->
-		<property name="configLocation" value="mybatis-config.xml" />
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
 		<!-- 数据源 -->
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
-	<!-- 原始dao接口 -->
-	<bean id="userDao" class="com.oracle.dao.UserDaoImpl">
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	<!-- mapper的配置 -->
-	<!-- MapperFactoryBean:根据mapper接口生成代理对象 -->
-	<!-- 这个方法的问题:需要针对每个mapper进行配置,麻烦 -->
-	<!-- <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"> <property name="sqlSessionFactory" 
-		ref="sqlSessionFactory"></property> <property name="mapperInterface" value="com.oracle.mapper.UserMapper"></property> 
-		</bean> -->
-	<!-- 通过MapperScannerConfigurer进行mapper扫描 -->
-	<!-- mapper的批量扫描,从mapper包中扫描出mapper接口,自动创建代理对象并且在spring容器中注册 -->
-	<!-- 遵循规范:将mapper.java和mapper.xml保持名称一致，且在一个目录中 -->
+	<!-- mapper配置扫描器 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<!-- 指定扫描的包名 -->
-		<!-- 自动扫面出来的mapper的bean的id为mapper类名(首字母小写) -->
-		<!-- 扫描多个包,每个包中间使用半角逗号分隔 -->
+		<!-- 扫描的包路径，如果需要扫描多个包，中间使用半角逗号隔开 -->
 		<property name="basePackage" value="com.oracle.mapper"></property>
-		<!-- 这里必须要使用sqlSessionFactoryBeanName,因为这样才能在连接池创建后注入属性 -->
-		<!-- 如果使用sqlSessionFactory就不行 -->
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
 	</bean>
 </beans>

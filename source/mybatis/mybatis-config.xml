@@ -3,15 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+	<!-- 全局setting设置 -->
 	<settings>
 		<setting name="logImpl" value="LOG4J2" />
 		<setting name="lazyLoadingEnabled" value="true" />
 		<setting name="aggressiveLazyLoading" value="false" />
 	</settings>
+	<!-- 配置别名 -->
 	<typeAliases>
 		<package name="com.oracle.po" />
 	</typeAliases>
-	<mappers>
-		<package name="com.oracle.mapper" />
-	</mappers>
+	<!-- 配置mapper，由于使用了spring，这里不需要配置了 -->
+	<!-- 必须遵循规则,mapper.xml和mapper.java在同一文件夹且在同一目录 -->
+	<!-- <mappers> <package name="com.oracle.mapper" /> </mappers> -->
 </configuration>
