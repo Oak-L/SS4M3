@@ -22,4 +22,6 @@ public interface ItemsService {
 	 * @throws Exception
 	 */
 	public void updateItems(Integer id, ItemsCustom itemsCustom) throws Exception;
+
+	public void deleteItems(Integer[] items_ids) throws Exception;
 }

@@ -9,6 +9,12 @@
 </head>
 <body>
 	<h1>1</h1>
+	<!-- 显示商品错误信息 -->
+	<c:if test="${allErrors!=null }">
+		<c:forEach items="${allErrors }" var="error">
+		${error.defaultMessage }
+	</c:forEach>
+	</c:if>
 	<form action="${pageContext.request.contextPath }/items/editItemsSubmit.action" method="post">
 		<input type="hidden" name="id" value="${itemsCustom.id}">
 		<table border=1 width="100%">

@@ -7,9 +7,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>查询商品列表</title>
 <script type="text/javascript">
-	function deleteItems() {
+	function saveItems() {
 		//提交form
-		document.itemsForm.action = "${pageContext.request.contextPath }/items/deleteItems.action";
+		document.itemsForm.action = "${pageContext.request.contextPath }/items/listEditItemsSubmit.action";
 		document.itemsForm.submit();
 	}
 	function queryItems() {
@@ -25,34 +25,30 @@
 		method="post">
 		<table border=1 width="50%">
 			<tr>
-				<td>商品名称</td>
+				<!-- <td>商品名称</td>
 				<td><input type="text" name="itemsCustom.name"></td>
-				<td><input type="button" value="查询" onclick="queryItems()"></td>
-				<td><input type="button" value="删除选中" onclick="deleteItems()"></td>
-				<td><input type="button" value="批量修改"
-					onclick="javascrtpt:window.location.href='${pageContext.request.contextPath }/items/listEditItems.action'"></td>
+				<td><input type="button" value="查询" onclick="queryItems()"></td> -->
+				<td><input type="button" value="保存全部" onclick="saveItems()"></td>
 			</tr>
 		</table>
 
 		<table border=1 width="100%">
 			<tr>
-				<td>选择</td>
 				<td>名称</td>
 				<td>价格</td>
 				<td>描述</td>
 				<td>图片</td>
 				<td>时间</td>
-				<td>操作</td>
 			</tr>
-			<c:forEach items="${list}" var="item">
+			<c:forEach items="${list}" var="item" varStatus="i">
 				<tr>
-					<td><input type="checkbox" name="items_ids" value="${item.id}"></td>
-					<td>${item.name}</td>
-					<td>${item.price}</td>
-					<td>${item.detail}</td>
-					<td>${item.pic}</td>
-					<td><fmt:formatDate value="${item.createtime}" pattern="yyyy-MM-dd" /></td>
-					<td><a href="${pageContext.request.contextPath}/items/editItems.action?id=${item.id}">修改</a></td>
+					<td><input type="hidden" name="itemsList[${i.index }].id" value="${item.id}"></td>
+					<td><input type="text" name="itemsList[${i.index }].name" value="${item.name}"></td>
+					<td><input type="text" name="itemsList[${i.index }].price" value="${item.price}"></td>
+					<td><input type="text" name="itemsList[${i.index }].detail" value="${item.detail}"></td>
+					<td><input type="text" name="itemsList[${i.index }].pic" value="${item.pic}"></td>
+					<td><input type="text" name="itemsList[${i.index }].createtime"
+						value="<fmt:formatDate value="${item.createtime}" pattern="yyyy-MM-dd" />"></td>
 				</tr>
 			</c:forEach>
 		</table>

@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.oracle.po.ItemsCustom;
+import com.oracle.po.ItemsQueryVo;
 import com.oracle.service.ItemsService;
 
 /**
@@ -30,8 +34,8 @@ public class ItemsController {
 	// @RequestMapping("/queryItems")
 	// 限制http请求的方法,限制后,如果使用其他请求方式会报错
 	@RequestMapping(value = "/queryItems", method = { RequestMethod.POST, RequestMethod.GET })
-	public ModelAndView find() throws Exception {
-		List<ItemsCustom> list = itemsService.findItemsList(null);
+	public ModelAndView find(ItemsQueryVo itemsQueryVo) throws Exception {
+		List<ItemsCustom> list = itemsService.findItemsList(itemsQueryVo);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("list", list);
 		modelAndView.setViewName("items/listItems");
@@ -58,7 +62,19 @@ public class ItemsController {
 
 	// 商品的修改
 	@RequestMapping("/editItemsSubmit")
-	public String editItemsSubmit(Integer id, ItemsCustom itemsCustom) throws Exception {
+	// 在需要检验的pojo前面添加@Validated，后面添加BindingResult，用于接收错误信息
+	// 注意：这两个配对使用，有几个加几个，位置必须一前一后
+	public String editItemsSubmit(Model model, Integer id, @Validated ItemsCustom itemsCustom,
+			BindingResult bindingResult) throws Exception {
+		if (bindingResult.hasErrors()) {
+			List<ObjectError> allErrors = bindingResult.getAllErrors();
+			for (ObjectError objectError : allErrors) {
+				System.out.println(objectError.getDefaultMessage());
+			}
+			model.addAttribute("allErrors", allErrors);
+			// 出错就重新到商品修改页面
+			return "items/editItems";
+		}
 		// 调用service更新商品信息，页面需要将商品信息传到此方法
 		itemsService.updateItems(id, itemsCustom);
 		// ModelAndView modelAndView = new ModelAndView();
@@ -69,5 +85,29 @@ public class ItemsController {
 		return "redirect:queryItems.action";
 		// 页面转发
 		// return "forword:queryItems.action";
+	}
+
+	// 商品的批量删除
+	@RequestMapping("/deleteItems")
+	public String deleteItems(Integer[] items_ids) throws Exception {
+		itemsService.deleteItems(items_ids);
+		return "redirect:queryItems.action";
+	}
+
+	// 商品的批量修改展示
+	@RequestMapping("/listEditItems")
+	public String listEditItems(Model model, ItemsQueryVo itemsQueryVo) throws Exception {
+		List<ItemsCustom> list = itemsService.findItemsList(itemsQueryVo);
+		model.addAttribute("list", list);
+		return "items/listEditItems";
+	}
+
+	// 商品的批量修改提交
+	@RequestMapping("/listEditItemsSubmit")
+	public String listEditItemsSubmit(ItemsQueryVo itemsQueryVo) throws Exception {
+		for (ItemsCustom itemsCustom : itemsQueryVo.getItemsList()) {
+			itemsService.updateItems(itemsCustom.getId(), itemsCustom);
+		}
+		return "redirect:queryItems.action";
 	}
 }

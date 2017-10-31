@@ -6,14 +6,14 @@
 		<!-- 使用动态sql,使用if判断 -->
 		<!-- 商品查询条件是用ItemsQueryVo中的ItemsCustom属性传入的 -->
 		<if test="itemsCustom!=null">
-			<if test="itemsCustom.name!=null and itemsCustom.name!=''">where name like '%#{itemsCustom.name}%'</if>
+			<if test="itemsCustom.name!=null and itemsCustom.name!=''">name like '%${itemsCustom.name}%'</if>
 		</if>
 	</sql>
 	<!-- 商品列表查询 -->
 	<!-- parameterType传入了包装对象(包装了查询条件) -->
 	<!-- resultType使用扩展对象 -->
 	<select id="findItemsList" parameterType="com.oracle.po.ItemsQueryVo" resultType="com.oracle.po.ItemsCustom">
-	select * FROM items
+		select * FROM items
 		<where>
 			<include refid="query_items_where"></include>
 		</where>

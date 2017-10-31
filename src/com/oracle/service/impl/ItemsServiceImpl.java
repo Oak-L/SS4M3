@@ -39,8 +39,16 @@ public class ItemsServiceImpl implements ItemsService {
 		// 对id进行校验，id为空，就抛出异常
 		// 更新商品信息，使用updateByPrimaryKeyWithBLOBs可以更新items表中的所有字段，包括大文本字段
 		// updateByPrimaryKeyWithBLOBs要求必须传入id
-		itemsCustom.setId(id);
+		if (id != null) {
+			itemsCustom.setId(id);
+		}
 		System.out.println(itemsMapper.updateByPrimaryKeyWithBLOBs(itemsCustom));
 	}
 
+	@Override
+	public void deleteItems(Integer[] items_ids) throws Exception {
+		for (Integer integer : items_ids) {
+			System.out.println(itemsMapper.deleteByPrimaryKey(integer));
+		}
+	}
 }
