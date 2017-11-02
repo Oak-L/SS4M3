@@ -23,7 +23,9 @@
 				<td>${item.name}</td>
 				<td>${item.price}</td>
 				<td>${item.detail}</td>
-				<td>${item.pic}</td>
+				<td><c:if test="${item.pic!=null}">
+						<img src="/pic/${item.pic }" width="100px" height="100px">
+					</c:if></td>
 				<td><fmt:formatDate value="${item.createtime}" pattern="yyyy-MM-dd HH:mm:ss E" /></td>
 				<td><a href="jsp/items/updateItems.jsp">修改</a></td>
 			</tr>

@@ -5,10 +5,13 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.oracle.controller.converter.ValidGroup1;
+
 public class Items {
 	private Integer id;
 	// 校验名称在1~30个字符中间
-	@Size(min = 1, max = 30, message = "{items.name.length}")
+	// groups标识此校验属于哪个分组，可以定义多个分组
+	@Size(min = 1, max = 30, message = "{items.name.length}", groups = { ValidGroup1.class })
 	private String name;
 
 	private Float price;

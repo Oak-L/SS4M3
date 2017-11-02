@@ -1,6 +1,10 @@
 package com.oracle.controller;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,11 +12,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.oracle.controller.converter.ValidGroup1;
 import com.oracle.po.ItemsCustom;
 import com.oracle.po.ItemsQueryVo;
 import com.oracle.service.ItemsService;
@@ -51,6 +60,7 @@ public class ItemsController {
 			throws Exception {
 		// 调用service根据id查询商品信息
 		ItemsCustom itemsCustom = itemsService.findItemsById(itemsId);
+
 		// ModelAndView modelAndView = new ModelAndView();
 		// modelAndView.addObject("itemsCustom", itemsCustom);
 		// modelAndView.setViewName("items/editItems");
@@ -64,8 +74,12 @@ public class ItemsController {
 	@RequestMapping("/editItemsSubmit")
 	// 在需要检验的pojo前面添加@Validated，后面添加BindingResult，用于接收错误信息
 	// 注意：这两个配对使用，有几个加几个，位置必须一前一后
-	public String editItemsSubmit(Model model, Integer id, @Validated ItemsCustom itemsCustom,
-			BindingResult bindingResult) throws Exception {
+	// @Validated(value = { ValidGroup1.class })指定使用分组校验
+	// @ModelAttribute("items")指定pojo数据回显在request域中的key,也可以把方法的返回值传到页面
+	// MultipartFile itemsPic 接收商品图片
+	public String editItemsSubmit(Model model, Integer id,
+			@Validated(value = { ValidGroup1.class }) ItemsCustom itemsCustom, BindingResult bindingResult,
+			MultipartFile itemsPic) throws Exception {
 		if (bindingResult.hasErrors()) {
 			List<ObjectError> allErrors = bindingResult.getAllErrors();
 			for (ObjectError objectError : allErrors) {
@@ -74,6 +88,20 @@ public class ItemsController {
 			model.addAttribute("allErrors", allErrors);
 			// 出错就重新到商品修改页面
 			return "items/editItems";
+		}
+		// 原始名称
+		String originalFilename = itemsPic.getOriginalFilename();
+		if (itemsPic != null && originalFilename != null && originalFilename.length() > 0) {
+			// 存储图片的物理路径
+			String picPath = "D:\\upload\\";
+			// 新的图片名称
+			String newFilename = UUID.randomUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));
+			// 新图片
+			File newFile = new File(picPath + newFilename);
+			// 写入硬盘
+			itemsPic.transferTo(newFile);
+			// 将pic位置写入itemsCustom属性中
+			itemsCustom.setPic(newFilename);
 		}
 		// 调用service更新商品信息，页面需要将商品信息传到此方法
 		itemsService.updateItems(id, itemsCustom);
@@ -109,5 +137,24 @@ public class ItemsController {
 			itemsService.updateItems(itemsCustom.getId(), itemsCustom);
 		}
 		return "redirect:queryItems.action";
+	}
+
+	// @ModelAttribute("items")可以把方法的返回值传到页面
+	@ModelAttribute("itemTypes")
+	public Map<String, String> getItemTypes() {
+		Map<String, String> itemTypes = new HashMap<String, String>();
+		itemTypes.put("101", "数码");
+		itemTypes.put("102", "电脑");
+		itemTypes.put("103", "游戏");
+		itemTypes.put("104", "娱乐");
+		return itemTypes;
+	}
+
+	// 查询商品信息，输出json
+	/// itemsView/{id}中的{id}表示在访问的时候把{id}传入@PathVariable("id")指定的"id"中
+	@RequestMapping("/itemsView/{id}")
+	public @ResponseBody ItemsCustom itemsView(@PathVariable("id") Integer id) throws Exception {
+		ItemsCustom itemsCustom = itemsService.findItemsById(id);
+		return itemsCustom;
 	}
 }

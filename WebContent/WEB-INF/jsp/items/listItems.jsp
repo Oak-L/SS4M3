@@ -20,12 +20,22 @@
 </script>
 </head>
 <body>
+	<c:if test="${user!=null }">
+		<h1>当前用户：${user}</h1>
+		<a href="${pageContext.request.contextPath }/logout.action">退出</a>
+	</c:if>
 	<h1>商品列表</h1>
 	<form name="itemsForm" action="${pageContext.request.contextPath }/items/queryItems.action"
 		method="post">
 		<table border=1 width="50%">
 			<tr>
 				<td>商品名称</td>
+				<td>商品类型<select name="itemType">
+						<c:forEach items="${itemTypes }" var="itemType">
+							<option value="${itemType.key }">${itemType.value }
+						</c:forEach>
+				</select>
+				</td>
 				<td><input type="text" name="itemsCustom.name"></td>
 				<td><input type="button" value="查询" onclick="queryItems()"></td>
 				<td><input type="button" value="删除选中" onclick="deleteItems()"></td>

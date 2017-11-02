@@ -12,10 +12,11 @@
 	<!-- 显示商品错误信息 -->
 	<c:if test="${allErrors!=null }">
 		<c:forEach items="${allErrors }" var="error">
-		${error.defaultMessage }
-	</c:forEach>
+		${error.defaultMessage }<br>
+		</c:forEach>
 	</c:if>
-	<form action="${pageContext.request.contextPath }/items/editItemsSubmit.action" method="post">
+	<form action="${pageContext.request.contextPath }/items/editItemsSubmit.action" method="post"
+		enctype="multipart/form-data">
 		<input type="hidden" name="id" value="${itemsCustom.id}">
 		<table border=1 width="100%">
 			<tr>
@@ -32,7 +33,10 @@
 			</tr>
 			<tr>
 				<td>图片</td>
-				<td><input type="text" name="pic" value="${itemsCustom.pic}"></td>
+				<td><c:if test="${itemsCustom.pic!=null&&itemsCustom.pic!=''}">
+						<img src="/pic/${itemsCustom.pic }" width="100px" height="100px">
+					</c:if> <input type="file" name="itemsPic"><input type="hidden" name="pic"
+					value="${itemsCustom.pic}"></td>
 			</tr>
 			<tr>
 				<td>时间</td>

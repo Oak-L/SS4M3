@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.oracle.exception.CustomException;
 import com.oracle.mapper.ItemsMapper;
 import com.oracle.mapper.ItemsMapperCustom;
 import com.oracle.po.Items;
@@ -27,9 +28,15 @@ public class ItemsServiceImpl implements ItemsService {
 	@Override
 	public ItemsCustom findItemsById(Integer id) throws Exception {
 		Items items = itemsMapper.selectByPrimaryKey(id);
-		ItemsCustom itemsCustom = new ItemsCustom();
-		// 调用spring自带的复制功能
-		BeanUtils.copyProperties(items, itemsCustom);
+		ItemsCustom itemsCustom = null;
+		// 如果查到的itemsCustom不存在，就抛出异常
+		if (items == null) {
+			throw new CustomException("修改的商品不存在");
+		} else {
+			itemsCustom = new ItemsCustom();
+			// 调用spring自带的复制功能
+			BeanUtils.copyProperties(items, itemsCustom);
+		}
 		return itemsCustom;
 	}
 

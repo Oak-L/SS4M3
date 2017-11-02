@@ -24,7 +24,23 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>springmvc</servlet-name>
+		<!-- 这里只能是*.action和/，不能是/* -->
 		<url-pattern>*.action</url-pattern>
+	</servlet-mapping>
+
+	<!-- 配置前端控制器2-实现RESTful -->
+	<servlet>
+		<servlet-name>springmvc_RESTful</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring/springmvc.xml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc_RESTful</servlet-name>
+		<!-- 这里配置/时，对静态资源解析会出现问题 -->
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 	<!-- 乱码过滤器 -->
